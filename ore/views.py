@@ -100,3 +100,40 @@ class ConcentrateAPIView(APIView):
             serializer.save(**unique_key_of_concentrate)
 
         return Response(serializer.data)
+
+
+class DeleteConcentrateAPIView(APIView):
+    """
+    Deleting a report of concentrate for year and month from the url.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, year, month, concentrate_name):
+        if not request.user.has_perm("ore.delete_concentrate"):
+            response_messages = {
+                "message": 
+                "You cannot delete concentrates"
+            }
+            return Response(response_messages)
+        
+        try:
+            concentrate = Concentrate.objects.get(
+                **formatting_unique_key_of_concentrate(
+                    year, 
+                    month, 
+                    concentrate_name
+                )
+            )
+            concentrate.delete()
+            
+            response_messages = {"message": "Concentrate report deleted"}
+
+        except ObjectDoesNotExist:
+            response_messages = {
+                "message": 
+                "There is no report for the concentrate with this name " \
+                "for the specified date in the database"
+            }
+
+        return Response(response_messages)
