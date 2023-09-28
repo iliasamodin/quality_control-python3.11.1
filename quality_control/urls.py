@@ -16,10 +16,15 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
-from ore.views import LogoutAPIView
+from ore.views import LogoutAPIView, ConcentrateAPIView
 
 urlpatterns = [
     path('admin-panel/', admin.site.urls),
     path('api/v1/login/', obtain_auth_token, name='login_api'),
-    path('api/v1/logout/', LogoutAPIView.as_view(), name='logout_api')
+    path('api/v1/logout/', LogoutAPIView.as_view(), name='logout_api'),
+    path(
+        'api/v1/concentrates/<int:year>/<int:month>/<str:concentrate_name>/',
+        ConcentrateAPIView.as_view(), 
+        name='concentrate_api'
+    )
 ]

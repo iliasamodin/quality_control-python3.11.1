@@ -5,11 +5,36 @@ class Concentrate(models.Model):
     name = models.CharField(max_length=255)
     year = models.PositiveSmallIntegerField()
     month = models.PositiveSmallIntegerField()
-    iron = models.DecimalField(max_digits=7, decimal_places=4)
-    silicon = models.DecimalField(max_digits=7, decimal_places=4)
-    aluminum = models.DecimalField(max_digits=7, decimal_places=4)
-    calcium = models.DecimalField(max_digits=7, decimal_places=4)
-    sulfur = models.DecimalField(max_digits=7, decimal_places=4)
+    iron = models.DecimalField(
+        max_digits=7, 
+        decimal_places=4, 
+        default=0,
+        blank=True
+    )
+    silicon = models.DecimalField(
+        max_digits=7, 
+        decimal_places=4, 
+        default=0,
+        blank=True
+    )
+    aluminum = models.DecimalField(
+        max_digits=7, 
+        decimal_places=4, 
+        default=0,
+        blank=True
+    )
+    calcium = models.DecimalField(
+        max_digits=7, 
+        decimal_places=4, 
+        default=0,
+        blank=True
+    )
+    sulfur = models.DecimalField(
+        max_digits=7, 
+        decimal_places=4, 
+        default=0,
+        blank=True
+    )
 
     class Meta:
         ordering = ["-year", "-month", "name"] 
