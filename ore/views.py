@@ -6,6 +6,7 @@ from ore.functions import (
     update_or_create_concentrate
 )
 from openpyxl import load_workbook
+from django.db.models import Avg, Min, Max
 
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -219,3 +220,60 @@ class UpdateConcentratesByTableAPIView(APIView):
             updated_reports_on_concentrates.append(serializer.data)
 
         return Response(updated_reports_on_concentrates)
+
+
+class AggregationOfConcentratesAPIView(APIView):
+    """
+    API presentation for aggregated reports on all concentrates 
+    for a month, for a year, or for all time.
+    """
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, **kwargs):
+        if not request.user.has_perm("ore.view_concentrate"):
+            response_messages = {
+                "message": 
+                "You cannot view information about concentrates"
+            }
+            return Response(response_messages)
+
+        aggregated_values = {}
+        # Adding rounded percentage values 
+        #   for the content of each element in concentrates 
+        #   to the average composition report 
+        #   and to the overall report for a specific time period
+        aggregated_values.update({
+            "avg": {
+                element: round(value, 4) if value is not None else None
+                for element, value in 
+                    Concentrate.objects.filter(**kwargs).aggregate(
+                        Avg("iron"),
+                        Avg("silicon"), 
+                        Avg("aluminum"), 
+                        Avg("calcium"), 
+                        Avg("sulfur")
+                    ).items()
+            }
+        })
+
+        aggregated_values.update({
+            "min":
+            Concentrate.objects.filter(**kwargs).aggregate(
+                Min("iron"),
+                Min("silicon"), 
+                Min("aluminum"), 
+                Min("calcium"), 
+                Min("sulfur")
+            ),
+            "max":
+            Concentrate.objects.filter(**kwargs).aggregate(
+                Max("iron"),
+                Max("silicon"), 
+                Max("aluminum"), 
+                Max("calcium"), 
+                Max("sulfur")
+            )
+        })
+
+        return Response(aggregated_values)

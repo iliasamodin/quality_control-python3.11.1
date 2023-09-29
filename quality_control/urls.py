@@ -20,7 +20,8 @@ from ore.views import (
     LogoutAPIView, 
     ConcentrateAPIView, 
     DeleteConcentrateAPIView,
-    UpdateConcentratesByTableAPIView
+    UpdateConcentratesByTableAPIView,
+    AggregationOfConcentratesAPIView
 )
 
 urlpatterns = [
@@ -41,5 +42,20 @@ urlpatterns = [
         'api/v1/concentrates/update-by-table/',
         UpdateConcentratesByTableAPIView.as_view(),
         name='update_concentrates_by_table_api'
+    ),
+    path(
+        'api/v1/concentrates/',
+        AggregationOfConcentratesAPIView.as_view(),
+        name='aggregation_for_all_time_api'
+    ),
+    path(
+        'api/v1/concentrates/<int:year>/',
+        AggregationOfConcentratesAPIView.as_view(),
+        name='aggregation_for_year_api'
+    ),
+    path(
+        'api/v1/concentrates/<int:year>/<int:month>/',
+        AggregationOfConcentratesAPIView.as_view(),
+        name='aggregation_for_month_api'
     )
 ]
