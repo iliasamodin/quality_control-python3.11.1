@@ -1,7 +1,10 @@
 from django.contrib.auth import logout
 from ore.models import Concentrate
 from django.core.exceptions import ObjectDoesNotExist
-from ore.functions import formatting_unique_key_of_concentrate
+from ore.functions import (
+    formatting_unique_key_of_concentrate,
+    update_or_create_concentrate
+)
 
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -83,21 +86,11 @@ class ConcentrateAPIView(APIView):
             concentrate_name
         )
 
-        # Changing an existing concentrate data report
-        try:
-            concentrate = Concentrate.objects.get(**unique_key_of_concentrate)
-            serializer = self.serializer_class(
-                instance=concentrate,
-                data=request.data
-            )
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-
-        # Adding a report with concentrate data
-        except ObjectDoesNotExist:
-            serializer = self.serializer_class(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save(**unique_key_of_concentrate)
+        serializer = update_or_create_concentrate(
+            serializer_class=self.serializer_class,
+            unique_key_of_concentrate=unique_key_of_concentrate,
+            concentrate_data=request.data
+        )
 
         return Response(serializer.data)
 
