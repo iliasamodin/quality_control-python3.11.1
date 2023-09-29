@@ -12,6 +12,9 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from ore.serializers import ConcentrateSerializer
+from rest_framework.compat import coreapi, coreschema
+from rest_framework.schemas import ManualSchema
+from rest_framework.schemas import coreapi as coreapi_schema
 
 
 class LogoutAPIView(APIView):
@@ -36,6 +39,79 @@ class ConcentrateAPIView(APIView):
     queryset = Concentrate.objects.all()
     serializer_class = ConcentrateSerializer
     permission_classes = [IsAuthenticated]
+
+    # Documenting the API with Swagger
+    if coreapi_schema.is_enabled():
+        schema = ManualSchema(
+            fields=[
+                coreapi.Field(
+                    name="iron",
+                    required=False,
+                    location="form",
+                    type="Decimal(7,4)",
+                    schema=coreschema.Number(
+                        title="Iron",
+                        description="Real value " \
+                        "with an accuracy of four digits " \
+                        "reflecting the percentage " \
+                        "of iron in the concentrate"
+                    )
+                ),
+                coreapi.Field(
+                    name="silicon",
+                    required=False,
+                    location="form",
+                    type="Decimal(7,4)",
+                    schema=coreschema.Number(
+                        title="Silicon",
+                        description="Real value " \
+                        "with an accuracy of four digits " \
+                        "reflecting the percentage " \
+                        "of silicon in the concentrate"
+                    )
+                ),
+                coreapi.Field(
+                    name="aluminum",
+                    required=False,
+                    location="form",
+                    type="Decimal(7,4)",
+                    schema=coreschema.Number(
+                        title="Aluminum",
+                        description="Real value " \
+                        "with an accuracy of four digits " \
+                        "reflecting the percentage " \
+                        "of aluminum in the concentrate"
+                    )
+                ),
+                coreapi.Field(
+                    name="calcium",
+                    required=False,
+                    location="form",
+                    type="Decimal(7,4)",
+                    schema=coreschema.Number(
+                        title="Calcium",
+                        description="Real value " \
+                        "with an accuracy of four digits " \
+                        "reflecting the percentage " \
+                        "of calcium in the concentrate"
+                    )
+                ),
+                coreapi.Field(
+                    name="sulfur",
+                    required=False,
+                    location="form",
+                    type="Decimal(7,4)",
+                    schema=coreschema.Number(
+                        title="Sulfur",
+                        description="Real value " \
+                        "with an accuracy of four digits " \
+                        "reflecting the percentage " \
+                        "of sulfur in the concentrate"
+                    )
+                )
+            ],
+            encoding="application/json",
+        )
 
     def get(self, request, year, month, concentrate_name):
         # If the user does not have permission to view concentrate data, 
@@ -142,6 +218,27 @@ class UpdateConcentratesByTableAPIView(APIView):
 
     serializer_class = ConcentrateSerializer
     permission_classes = [IsAuthenticated]
+
+    if coreapi_schema.is_enabled():
+        schema = ManualSchema(
+            fields=[
+                coreapi.Field(
+                    name="file",
+                    required=True,
+                    location="form",
+                    type="xlsx",
+                    schema=coreschema.Object(
+                        title="Excel table",
+                        description="Excel file in .xlsx format " \
+                        "containing the 'Concentrates' table " \
+                        "with required columns: 'name', 'year', 'month' " \
+                        "and optional columns: " \
+                        "'iron', 'silicon', 'aluminum', 'calcium' and 'sulfur'"
+                    )
+                )
+            ],
+            encoding="application/json",
+        )
 
     def get(self, request):
         response_messages = {
