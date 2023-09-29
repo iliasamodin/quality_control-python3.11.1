@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
+from rest_framework_swagger.views import get_swagger_view
 from ore.views import (
     LogoutAPIView, 
     ConcentrateAPIView, 
@@ -24,8 +25,15 @@ from ore.views import (
     AggregationOfConcentratesAPIView
 )
 
+schema_view = get_swagger_view(title="Reporting on concentrates API")
+
 urlpatterns = [
     path('admin-panel/', admin.site.urls),
+    path(
+        'api/v1/schema/', 
+        schema_view,
+        name='schema_api'
+    ),
     path('api/v1/login/', obtain_auth_token, name='login_api'),
     path('api/v1/logout/', LogoutAPIView.as_view(), name='logout_api'),
     path(
