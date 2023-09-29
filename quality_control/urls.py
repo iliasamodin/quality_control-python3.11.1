@@ -19,7 +19,8 @@ from rest_framework.authtoken.views import obtain_auth_token
 from ore.views import (
     LogoutAPIView, 
     ConcentrateAPIView, 
-    DeleteConcentrateAPIView
+    DeleteConcentrateAPIView,
+    UpdateConcentratesByTableAPIView
 )
 
 urlpatterns = [
@@ -35,5 +36,10 @@ urlpatterns = [
         'api/v1/concentrates/<int:year>/<int:month>/<str:concentrate_name>/delete/',
         DeleteConcentrateAPIView.as_view(),
         name='delete_concentrate_api'
+    ),
+    path(
+        'api/v1/concentrates/update-by-table/',
+        UpdateConcentratesByTableAPIView.as_view(),
+        name='update_concentrates_by_table_api'
     )
 ]

@@ -5,6 +5,7 @@ from ore.functions import (
     formatting_unique_key_of_concentrate,
     update_or_create_concentrate
 )
+from openpyxl import load_workbook
 
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -130,3 +131,91 @@ class DeleteConcentrateAPIView(APIView):
             }
 
         return Response(response_messages)
+
+
+class UpdateConcentratesByTableAPIView(APIView):
+    """
+    Updating information for reports of concentrates 
+    from a Excel file via API.
+    """
+
+    serializer_class = ConcentrateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        response_messages = {
+            "message": 
+            "Pass an Excel file in .xlsx format with reports on concentrates"
+        }
+        return Response(response_messages)
+
+    def post(self, request):
+        if not request.user.has_perms([
+            "ore.add_concentrate",
+            "ore.change_concentrate"
+        ]):
+            response_messages = {
+                "message": 
+                "You cannot add or change information about concentrates"
+            }
+            return Response(response_messages)
+
+        xlsx_file = request.FILES.get("file")
+        # Checking whether the .xlsx file in the form 
+        #   was transferred via the API
+        if xlsx_file is None: 
+            response_messages = {
+                "message": 
+                "The .xlsx file was not passed " \
+                "under the corresponding 'file' key"
+            }
+            return Response(response_messages)
+
+        # Obtaining a sheet with concentrates from an .xlsx file
+        xlsx_of_concentrates = \
+            iter(load_workbook(filename=xlsx_file)["Concentrates"])
+
+        # Generating a list of sheet column names
+        column_names_in_xlsx = []
+        for cell in next(xlsx_of_concentrates):
+            if cell.value is None:
+                break
+            column_names_in_xlsx.append(cell.value.lower())
+
+        updated_reports_on_concentrates = []
+        # Updating existing reports on concentrates 
+        #   and adding new reports based on data from the .xlsx file
+        for line in xlsx_of_concentrates:
+            concentrate_data = {}
+            # Formation of a dictionary with all concentrate data 
+            #   obtained from the .xlsx file
+            for i, cell in enumerate(line):
+                if cell.value is None:
+                    break
+                concentrate_data.update({column_names_in_xlsx[i]: cell.value})
+
+            unique_key_of_concentrate = formatting_unique_key_of_concentrate(
+                concentrate_data["year"],
+                concentrate_data["month"],
+                concentrate_data["name"]
+            )
+
+            # Removing data of concentrate unique key 
+            #   from its composition data
+            del concentrate_data["year"], \
+                concentrate_data["month"], \
+                concentrate_data["name"]
+
+            serializer = update_or_create_concentrate(
+                serializer_class=self.serializer_class,
+                unique_key_of_concentrate=unique_key_of_concentrate,
+                concentrate_data=concentrate_data
+            )
+
+            # Generating a list of reports on concentrates 
+            #   that have been updated or added 
+            #   based on data from the .xlsx file, 
+            #   to return this list in response to an API request
+            updated_reports_on_concentrates.append(serializer.data)
+
+        return Response(updated_reports_on_concentrates)
