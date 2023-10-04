@@ -25,6 +25,14 @@ class LogoutAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        response_messages = {
+            "message": 
+            "To log out of your account, " \
+            "send a post request to the current page"
+        }
+        return Response(response_messages)
+
+    def post(self, request):
         logout(request)
         response_messages = {"message": "You are logged out"}
         return Response(response_messages)
