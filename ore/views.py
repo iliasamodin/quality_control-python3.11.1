@@ -189,6 +189,13 @@ class DeleteConcentrateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, year, month, concentrate_name):
+        response_messages = {
+            "message": 
+            "Send a delete request to delete a concentrate record"
+        }
+        return Response(response_messages)
+
+    def delete(self, request, year, month, concentrate_name):
         if not request.user.has_perm("ore.delete_concentrate"):
             response_messages = {
                 "message": 
