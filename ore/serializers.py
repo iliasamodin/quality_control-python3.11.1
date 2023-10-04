@@ -11,11 +11,12 @@ class ConcentrateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Concentrate
         fields = [
-            "name", "year", "month", 
+            "name", "batch", "year", "month", 
             "iron", "silicon", "aluminum", "calcium", "sulfur"
         ]
         extra_kwargs = {
             "name": {"read_only": True},
+            "batch": {"read_only": True},
             "year": {"read_only": True},
             "month": {"read_only": True},
             "iron": {"required": False},
