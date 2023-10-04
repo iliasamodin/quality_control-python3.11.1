@@ -25,6 +25,14 @@ class LogoutAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        response_messages = {
+            "message": 
+            "To log out of your account, " \
+            "send a post request to the current page"
+        }
+        return Response(response_messages)
+
+    def post(self, request):
         logout(request)
         response_messages = {"message": "You are logged out"}
         return Response(response_messages)
@@ -181,6 +189,13 @@ class DeleteConcentrateAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, year, month, concentrate_name):
+        response_messages = {
+            "message": 
+            "Send a delete request to delete a concentrate record"
+        }
+        return Response(response_messages)
+
+    def delete(self, request, year, month, concentrate_name):
         if not request.user.has_perm("ore.delete_concentrate"):
             response_messages = {
                 "message": 
