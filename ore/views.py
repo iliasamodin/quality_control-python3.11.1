@@ -121,7 +121,7 @@ class ConcentrateAPIView(APIView):
             encoding="application/json",
         )
 
-    def get(self, request, year, month, concentrate_name):
+    def get(self, request, year, month, concentrate_name, batch):
         # If the user does not have permission to view concentrate data, 
         #   then the user will receive a corresponding message 
         #   in response to the request
@@ -136,8 +136,9 @@ class ConcentrateAPIView(APIView):
             queryset = self.queryset.get(
                 **formatting_unique_key_of_concentrate(
                     year, 
-                    month, 
-                    concentrate_name
+                    month,
+                    concentrate_name,
+                    batch
                 )
             )
             concentrate = self.serializer_class(instance=queryset).data
@@ -155,7 +156,7 @@ class ConcentrateAPIView(APIView):
             }
             return Response(response_messages)
 
-    def post(self, request, year, month, concentrate_name):
+    def post(self, request, year, month, concentrate_name, batch):
         if not request.user.has_perms([
             "ore.add_concentrate",
             "ore.change_concentrate"
@@ -168,8 +169,9 @@ class ConcentrateAPIView(APIView):
 
         unique_key_of_concentrate = formatting_unique_key_of_concentrate(
             year, 
-            month, 
-            concentrate_name
+            month,
+            concentrate_name,
+            batch
         )
 
         serializer = update_or_create_concentrate(
@@ -188,14 +190,14 @@ class DeleteConcentrateAPIView(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, year, month, concentrate_name):
+    def get(self, request, year, month, concentrate_name, batch):
         response_messages = {
             "message": 
             "Send a delete request to delete a concentrate record"
         }
         return Response(response_messages)
 
-    def delete(self, request, year, month, concentrate_name):
+    def delete(self, request, year, month, concentrate_name, batch):
         if not request.user.has_perm("ore.delete_concentrate"):
             response_messages = {
                 "message": 
@@ -207,8 +209,9 @@ class DeleteConcentrateAPIView(APIView):
             concentrate = Concentrate.objects.get(
                 **formatting_unique_key_of_concentrate(
                     year, 
-                    month, 
-                    concentrate_name
+                    month,
+                    concentrate_name,
+                    batch
                 )
             )
             concentrate.delete()
@@ -246,7 +249,8 @@ class UpdateConcentratesByTableAPIView(APIView):
                         title="Excel table",
                         description="Excel file in .xlsx format " \
                         "containing the 'Concentrates' table " \
-                        "with required columns: 'name', 'year', 'month' " \
+                        "with required columns: " \
+                        "'name', 'batch', 'year', 'month' " \
                         "and optional columns: " \
                         "'iron', 'silicon', 'aluminum', 'calcium' and 'sulfur'"
                     )
@@ -310,13 +314,15 @@ class UpdateConcentratesByTableAPIView(APIView):
             unique_key_of_concentrate = formatting_unique_key_of_concentrate(
                 concentrate_data["year"],
                 concentrate_data["month"],
-                concentrate_data["name"]
+                concentrate_data["name"],
+                concentrate_data["batch"]
             )
 
             # Removing data of concentrate unique key 
             #   from its composition data
             del concentrate_data["year"], \
                 concentrate_data["month"], \
+                concentrate_data["batch"], \
                 concentrate_data["name"]
 
             serializer = update_or_create_concentrate(

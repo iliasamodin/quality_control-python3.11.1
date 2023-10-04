@@ -37,12 +37,12 @@ urlpatterns = [
     path('api/v1/login/', obtain_auth_token, name='login_api'),
     path('api/v1/logout/', LogoutAPIView.as_view(), name='logout_api'),
     path(
-        'api/v1/concentrates/<int:year>/<int:month>/<str:concentrate_name>/',
+        'api/v1/concentrates/<int:year>/<int:month>/<str:concentrate_name>/<int:batch>/',
         ConcentrateAPIView.as_view(), 
         name='concentrate_api'
     ),
     path(
-        'api/v1/concentrates/<int:year>/<int:month>/<str:concentrate_name>/delete/',
+        'api/v1/concentrates/<int:year>/<int:month>/<str:concentrate_name>/<int:batch>/delete/',
         DeleteConcentrateAPIView.as_view(),
         name='delete_concentrate_api'
     ),

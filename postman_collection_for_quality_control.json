@@ -197,7 +197,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:8000/api/v1/concentrates/2023/4/first-concentrate/",
+							"raw": "http://127.0.0.1:8000/api/v1/concentrates/2023/4/first-concentrate/11/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -213,6 +213,7 @@
 								"2023",
 								"4",
 								"first-concentrate",
+								"11",
 								""
 							]
 						}
@@ -311,6 +312,7 @@
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData).to.eql({",
 									"        \"name\": \"First concentrate\",",
+									"        \"batch\": 11,",
 									"        \"year\": 2023,",
 									"        \"month\": 4,",
 									"        \"iron\": \"90.0000\",",
@@ -344,7 +346,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/api/v1/concentrates/2023/4/first-concentrate/",
+							"raw": "http://127.0.0.1:8000/api/v1/concentrates/2023/4/first-concentrate/11/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -360,6 +362,7 @@
 								"2023",
 								"4",
 								"first-concentrate",
+								"11",
 								""
 							]
 						}
@@ -641,7 +644,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:8000/api/v1/concentrates/2023/4/first-concentrate/delete/",
+							"raw": "http://127.0.0.1:8000/api/v1/concentrates/2023/4/first-concentrate/11/delete/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -657,6 +660,7 @@
 								"2023",
 								"4",
 								"first-concentrate",
+								"11",
 								"delete",
 								""
 							]
@@ -1197,6 +1201,7 @@
 									"    var jsonData = pm.response.json();",
 									"    pm.expect(jsonData).to.eql({",
 									"        \"name\": \"Second concentrate\",",
+									"        \"batch\": 12,",
 									"        \"year\": 2023,",
 									"        \"month\": 4,",
 									"        \"iron\": \"93.0000\",",
@@ -1221,7 +1226,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://127.0.0.1:8000/api/v1/concentrates/2023/4/second-concentrate/",
+							"raw": "http://127.0.0.1:8000/api/v1/concentrates/2023/4/second-concentrate/12/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1237,6 +1242,7 @@
 								"2023",
 								"4",
 								"second-concentrate",
+								"12",
 								""
 							]
 						}
@@ -1361,7 +1367,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://127.0.0.1:8000/api/v1/concentrates/2023/4/second-concentrate/",
+							"raw": "http://127.0.0.1:8000/api/v1/concentrates/2023/4/second-concentrate/12/",
 							"protocol": "http",
 							"host": [
 								"127",
@@ -1377,6 +1383,7 @@
 								"2023",
 								"4",
 								"second-concentrate",
+								"12",
 								""
 							]
 						}

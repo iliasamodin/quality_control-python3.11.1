@@ -1,8 +1,10 @@
 from django.db import models
+from time import time
 
 
 class Concentrate(models.Model):
     name = models.CharField(max_length=255)
+    batch = models.IntegerField()
     year = models.PositiveSmallIntegerField()
     month = models.PositiveSmallIntegerField()
     iron = models.DecimalField(
@@ -37,8 +39,8 @@ class Concentrate(models.Model):
     )
 
     class Meta:
-        ordering = ["-year", "-month", "name"] 
-        unique_together = ["name", "year", "month"]
+        ordering = ["-year", "-month", "-batch", "name"] 
+        unique_together = ["name", "batch", "year", "month"]
 
     def __str__(self):
         return f"{self.name} {self.year}.{self.month}"
